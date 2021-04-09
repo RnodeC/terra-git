@@ -1,0 +1,1 @@
+This was the original effort to containerize all the various components that comprise the validator architecture.  Keeping it here in case I want to come back to it one day.  But, I have scrapped the container/k8s plans after reading this:  https://kb.certus.one/systems.html 
