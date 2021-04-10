@@ -31,7 +31,7 @@ variable "instance_type" {
 
 variable "oracle_instance_type" {
     type = string
-    default = "n2-standard-1"
+    default = "n2-standard-2"
 }
 
 

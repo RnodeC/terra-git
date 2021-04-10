@@ -16,7 +16,6 @@ sudo su - terrauser
 
 ## Update OS and add a few packages
 ```bash
-sudo rm -f /etc/yum.repos.d/epel
 sudo yum update -y
 sudo yum install jq git wget make gcc -y
 ```
