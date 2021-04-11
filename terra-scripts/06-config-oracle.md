@@ -214,7 +214,7 @@ terracli tx oracle set-feeder $FEEDER_ADDRESS --from=$VALIDATOR --chain-id $NETW
 This feeder wallet needs Luna to pay the gas for all his transactions.  Lots and lots of transaction.  Very miniscule gas fees, but you don't want it to run dry or you will start missing votes!
 ```bash
 terracli tx send $FROM_ADDRESS $TO_ADDRESS $AMOUNT --fees 30000uluna
-terracli tx market swap $AMOUNT ukrw --from=$WALLET
+terracli tx market swap $AMOUNT ukrw --from=$WALLET --fees 30000uluna
 ```
 * `FROM_ADDRESS`: if you are on your client machine where this wallet lives, this can just be the public address of the wallet with the funds
 * `TO_ADDRESS`: if you are on your client machine where this wallet lives, this can just be the public address of the wallet for the funds
@@ -226,8 +226,8 @@ terracli tx market swap $AMOUNT ukrw --from=$WALLET
 ```bash
 sudo systemctl daemon-reload
 sudo systemctl enable price-server
-sudo systemctl start price-server
 sudo systemctl enable price-feeder
+sudo systemctl start price-server
 sudo systemctl start price-feeder
 ```
 And check on them...

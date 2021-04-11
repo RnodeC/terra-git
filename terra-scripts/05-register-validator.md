@@ -21,14 +21,16 @@ terracli config trust-node true
 * `VALIDATOR_INSTANCE_NAME`: The name you assigned your validator (`gcloud compute instances list`)
 * `VALIDATOR_INSTANCE_ZONE`: The zone your validator is running in
 
-> Note: all `gcloud compute ssh --tunnel-through-iap` commands assume that you have enabled this feature in your GCP environment
+> Note: all `gcloud compute ssh` **`--tunnel-through-iap`** commands assume that you have enabled this feature in your GCP environment
+
+> Note: shoutout to pete's fan club for the ssh tunnel idea  
 
 ## Register Validator
 
 ```bash
 terracli tx staking create-validator \
 	--pubkey $VALIDATOR_PUBLIC_KEY \
-	--amount "1000000000uluna" \
+	--amount $AMOUNT \
 	--from $VALIDATOR_WALLET_NAME \
 	--commission-rate 0.1 \
 	--commission-max-rate 0.2 \
@@ -41,11 +43,12 @@ terracli tx staking create-validator \
 * `VALIDATOR_PUBLIC_KEY`: this is the public key you get from the validator node itself (`terrad tendermint show-validator`).  It corresponds to the `.terrad/config/priv_validator_key.json` file on your validator node.  It is your actual nodes signing key identity.  i.e. `terravalconspubxxxx`
 * `VALIDATOR_WALLET_NAME`:  the wallet that you want to be in control of any funds sent to this validator (your rewards/commission).  Local here on your client machine.  This should just be a plaintext string that `terracli` is aware of (`terracli keys list`)
 * `MONIKER`: The public facing name you want to give your Validator.  `RnodeC`
+* `AMOUNT`: how much to add to validator wallet... i.e. `4000000000uluna` (which is 4000 luna)
 
-## Delegate Luna from your testwallet to your validator
+## Delegate Luna from your wallet to your validator?
 
 ```bash
-terracli tx staking delegate $VALIDATOR_ADDRESS $AMOUNT --fees 30000uluna --chain-id tequila-0004 --from $WALLET
+terracli tx staking delegate $VALIDATOR_ADDRESS $AMOUNT --fees 30000uluna --from $WALLET
 ```
 * `VALIDATOR_ADDRESS`: the bech encoded address of the wallet used to back your validator (`terravaloperxxxx`).  Use `terracli keys show -a --bech val VALIDATOR_WALLET_NAME` to get this. 
 * `AMOUNT`: how much to delegate... i.e. `4000000000uluna` (which is 4000 luna)
