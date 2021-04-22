@@ -1,5 +1,15 @@
 #!/bin/bash
 
+function usage() {
+    echo "
+    Usage - valcheck -m <moniker name> [OPTIONS]
+    
+    OPTIONS
+    -l: LCD Host.  defaults to localhost
+    -p: LCD Port.  defaults to 1317
+    "
+}
+
 while [[ $# -gt 0 ]]; do 
   key="$1"
   case $key in 
@@ -32,15 +42,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 
-function usage() {
-    echo "
-    Usage - valcheck -m <moniker name> [OPTIONS]
-    
-    OPTIONS
-    -l: LCD Host.  defaults to localhost
-    -p: LCD Port.  defaults to 1317
-    "
-}
+
 # default lcd values - assuming localhost.  (I like to ssh port forward client to validator or sentry's lcd)
 LCDHOST=${LCDHOST:=localhost}
 LCDPORT=${LCDPORT:=1317}
