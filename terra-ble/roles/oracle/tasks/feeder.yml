@@ -1,0 +1,52 @@
+- name: get oracle-feeder repo
+  git:
+    clone: yes
+    repo: https://github.com/terra-project/oracle-feeder
+    dest: "{{ oracleuser_homedir }}/oracle-feeder"
+    force: yes
+  become: yes
+  become_user: "{{ oracleuser }}"
+
+- name: npm install feeder
+  shell: "source {{ profile }} && npm install"
+  args:
+    executable: /bin/bash
+    chdir: "{{ oracleuser_homedir }}/oracle-feeder/feeder"
+    warn: no
+  become: yes
+  become_user: "{{ oracleuser }}"
+
+- name: store feeder wallet (npm start update-key)
+  shell: "source {{ profile }} && MNEMONIC=\"{{ feeder_mnemonic }}\" PASSPHRASE={{ feeder_encryption_key }} npm start update-key"
+  args:
+    executable: /bin/bash
+    chdir: "{{ oracleuser_homedir }}/oracle-feeder/feeder"
+    warn: no
+  become: yes
+  become_user: "{{ oracleuser }}"
+
+- name: load run-feeder script
+  template:
+    src: run-feeder.sh.j2
+    dest: "{{ oracleuser_homedir }}/run-feeder.sh"
+    mode: 0700
+  become: yes
+  become_user: "{{ oracleuser }}"  
+
+- name: feeder systemd unit file
+  template:
+    src: feeder.service.j2
+    dest: /etc/systemd/system/feeder.service
+  become: yes
+
+- name: systemctl daemon-reload
+  systemd:
+    daemon-reload: yes
+  become: yes
+
+- name: systemctl start feeder
+  systemd:
+    name: feeder
+    state: restarted
+    enabled: yes
+  become: yes

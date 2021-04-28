@@ -1,0 +1,26 @@
+- name: Check for node_key
+  local_action: stat path={{ path_to_node_key }}
+  register: stat_node_key
+
+- name: Check for priv_validator_key
+  local_action: stat path={{ path_to_priv_validator_key }}
+  register: stat_priv_validator_key
+
+- name: load node_key.json into .terrad/config dir
+  copy:
+    src: "{{ path_to_node_key }}"
+    dest: "{{ terrad_root }}/config/node_key.json"
+    force: yes
+  become: yes
+  become_user: "{{ terrauser }}"
+  when: stat_node_key.stat.exists == true
+
+- name: load priv_validator_key.json into .terrad/config dir
+  copy:
+    src: "{{ path_to_priv_validator_key }}"
+    dest: "{{ terrad_root }}/config/priv_validator_key.json"
+    force: yes
+  become: yes
+  become_user: "{{ terrauser }}"
+  when: stat_priv_validator_key.stat.exists == true
+

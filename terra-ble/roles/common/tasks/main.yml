@@ -1,0 +1,4 @@
+---
+- include: yum-update.yml
+
+- include: install-go.yml

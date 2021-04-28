@@ -1,0 +1,51 @@
+- name: add the oracle user
+  user:
+    name: "{{ oracleuser }}"
+    shell: /bin/bash
+  become: yes
+
+- name: install packages
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - jq
+    - git
+    - wget
+    - gcc
+    - make
+  become: yes
+
+- name: create nodejs install dir
+  file:
+    path: /usr/local/lib/nodejs
+    state: directory
+  become: yes
+
+- name: install node
+  unarchive:
+    src: "{{ node_url }}"
+    remote_src: yes
+    dest:  /usr/local/lib/nodejs
+  become: yes
+
+- name: update npm
+  shell: "export PATH=/usr/local/lib/nodejs/node-{{ node_version }}-{{ node_distro }}/bin:$PATH && npm install -g npm"
+  args:
+    executable: /bin/bash
+    warn: no
+  become: yes
+
+- name: update .profile
+  lineinfile:
+    path: "{{ profile }}"
+    owner: "{{ oracleuser }}"
+    group: "{{ oracleuser }}"
+    create: yes
+    mode: 0644
+    line: "export PATH=/usr/local/lib/nodejs/node-{{ node_version }}-{{ node_distro }}/bin:$PATH"
+    state: present
+  become: yes
+  become_user: "{{ oracleuser }}"
+
+- include_tasks: '{{ action }}.yml'

@@ -1,0 +1,14 @@
+#!/bin/bash
+
+souce $HOME/.profile
+
+pushd $HOME/oracle-feeder/feeder
+
+npm start vote -- \
+    --source http://localhost:8532/latest \
+    --lcd http://localhost:1317 \
+    --chain-id {{ network }} \
+    --denoms sdr,krw,usd,mnt,eur,cny,jpy,gbp,inr,cad,chf,hkd,aud,sgd \
+    --validator {{ validator_bech_address }} \
+    --password {{ feeder_encryption_key }} \
+    --gas-prices 169.77ukrw

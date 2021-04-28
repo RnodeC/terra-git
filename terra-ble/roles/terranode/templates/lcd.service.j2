@@ -1,0 +1,16 @@
+[Unit]
+Description=Terra CLI LCD Service
+After=network.target
+
+[Service]
+Type=simple
+User={{ terrauser }}
+ExecStart={{ terrauser_homedir }}/go/bin/terracli rest-server --chain-id={{ network }} --laddr=tcp://0.0.0.0:1317 --node tcp://localhost:26657 --trust-node=true
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+LimitNOFILE=65535

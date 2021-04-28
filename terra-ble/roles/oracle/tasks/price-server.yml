@@ -1,0 +1,43 @@
+- name: get oracle-feeder repo
+  git:
+    clone: yes
+    repo: https://github.com/terra-project/oracle-feeder
+    dest: "{{ oracleuser_homedir }}/oracle-feeder"
+    force: yes
+  become: yes
+  become_user: "{{ oracleuser }}"
+
+- name: load oracle price server config file
+  template:
+    src: default.js.j2
+    dest: "{{ oracleuser_homedir }}/oracle-feeder/price-server/config/default.js"
+  become: yes
+  become_user: "{{ oracleuser }}"   
+
+- name: npm install oracle price server
+  shell: "source {{ profile }} && npm install"
+  args:
+    executable: /bin/bash
+    chdir: "{{ oracleuser_homedir }}/oracle-feeder/price-server"
+    warn: no
+  become: yes
+  become_user: "{{ oracleuser }}"
+
+- name: price-server systemd unit file
+  template:
+    src: price-server.service.j2
+    dest: /etc/systemd/system/price-server.service
+  become: yes
+
+- name: systemctl daemon-reload
+  systemd:
+    daemon-reload: yes
+  become: yes
+
+- name: systemctl start price-server
+  systemd:
+    name: price-server
+    state: restarted
+    enabled: yes
+  become: yes
+

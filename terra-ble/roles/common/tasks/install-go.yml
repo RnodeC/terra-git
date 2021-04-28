@@ -1,0 +1,43 @@
+- name: create gobin dir
+  file: 
+    path: "/home/{{ go_user }}/go/bin" 
+    owner: "{{ go_user }}"
+    group: "{{ go_user }}"
+    state: directory
+    mode: 0775
+  become: yes
+
+- name: delete goroot dir before install
+  file:
+    path: "/usr/local/go"
+    state: absent
+  become: yes
+
+- name: download go
+  get_url:
+    url: "{{ go_url }}"
+    dest: "/root"
+    checksum: "sha256:{{ go_sha }}"
+  register: dl_go
+  become: yes
+
+- name: extract go
+  unarchive:
+    src: "{{ dl_go.dest }}"
+    remote_src: yes
+    dest: /usr/local/
+  become: yes
+
+- name: update .profile
+  blockinfile:
+    path: /home/{{ go_user }}/.profile
+    owner: "{{ go_user }}"
+    group: "{{ go_user }}"
+    create: yes
+    mode: "0644"
+    block: |
+      GOPATH="$HOME/go"
+      GOBIN="$GOPATH/bin"
+      PATH="$GOBIN:/usr/local/go/bin:$PATH"
+  become: yes
+  become_user: "{{ go_user }}"

@@ -1,0 +1,38 @@
+---
+
+#- hosts: all
+#  roles:
+#    - common
+#  vars:
+#    go_user: "{{ terrauser }}"
+
+#- hosts: terranodes
+#  roles:
+#  - role: terranode
+#    action: chaindata 
+#    when: get_chain_data == true
+#
+#  - role: terranode
+#    action: terranode 
+     
+# sentry support tbd
+#- hosts: sentries
+#  roles:
+#    - sentry
+
+- hosts: validator
+  roles:
+    - role: terranode
+      action: lcd
+    - role: terranode
+      action: validator 
+
+# do not support feeder and server on different servers
+#- hosts: oracle
+#  roles:
+#    - role: oracle
+#      action: price-server
+#    - role: oracle
+#      action: feeder
+
+

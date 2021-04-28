@@ -1,0 +1,18 @@
+m1 ansible_host=<ip or fqdn> ansible_user=<ssh_user> ansible_ssh_private_key_file=<path_to_ssh_key_file> 
+#m2 ansible_host=<ip or fqdn> ansible_user=<ssh_user> ansible_ssh_private_key_file=<path_to_ssh_key_file> 
+m3 ansible_host=<ip or fqdn> ansible_user=<ssh_user> ansible_ssh_private_key_file=<path_to_ssh_key_file> 
+
+[validator]
+m1
+
+#[sentries]
+#m2 
+
+[oracle]
+m3
+
+# do not edit
+[terranodes:children]
+validator
+sentries
+

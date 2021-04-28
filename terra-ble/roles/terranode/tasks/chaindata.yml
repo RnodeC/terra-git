@@ -1,0 +1,81 @@
+- name: add user who will own this directory
+  user:
+    name: "{{ terrauser }}"
+    shell: /bin/bash
+  become: yes
+
+- name: install epel
+  yum:
+    name: epel-release
+    state: present
+  become: yes
+
+
+- name: install packages
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+  - git
+  - python
+  - wget
+  - aria2
+  - jq
+  become: yes
+
+
+- name: make filesystem on chaindisk
+  filesystem:
+    dev: "{{ chaindisk }}"
+    fstype: ext4
+  become: yes
+
+- name: make mountpoint for chaindisk
+  file:
+    path: "{{ chaindir }}/{{ network }}"
+    mode: 0777
+    owner: "terrauser"
+    group: "terrauser"
+    state: directory
+  become: yes
+
+
+- name: mount chaindisk
+  mount:
+    path: "{{ chaindir }}/{{ network }}"
+    src: "{{ chaindisk }}"
+    fstype: ext4
+    state: mounted
+  become: yes
+
+- name: make terrauser the owner of this dir
+  file:
+    path: "{{ chaindir }}/{{ network }}"
+    mode: 0777
+    state: directory
+  become: yes
+
+- name: download quicksync file
+  shell: "aria2c -x5 https://get.quicksync.io/{{ chainfile }}.tar.lz4"
+  args:
+    executable: /bin/bash
+    chdir: "{{ chaindir }}/{{ network }}"
+    warn: no
+    creates: "{{ chainfile }}.tar.lz4"
+  become: yes
+  become_user: "terrauser"
+  async: 72000
+  poll: 10
+
+
+- name: extract quicksync file
+  shell: "tar -I lz4 -xf {{ chainfile }}.tar.lz4"
+  args:
+    executable: /bin/bash
+    chdir: "{{ chaindir }}/{{ network }}"
+    warn: no
+    creates: "{{ chaindir }}/{{ network }}/data"
+  become: yes
+  become_user: "terrauser"
+  async: 72000
+  poll: 10

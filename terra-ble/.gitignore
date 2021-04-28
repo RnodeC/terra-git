@@ -1,0 +1,3 @@
+ansible_vars.yaml
+inventory.ini
+ansible.log

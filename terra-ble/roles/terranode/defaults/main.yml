@@ -1,0 +1,9 @@
+# caller must provide:
+## chaindir - root dir where data resides
+## network - tequila-0004, columbus-4, etc
+## terrauser - name of user to operate terra
+
+full_chaindir: "{{ chaindir }}/{{ network }}/data"
+terrauser_homedir: "/home/{{ terrauser }}"
+terrad_root: "{{ terrauser_homedir }}/.terrad"
+profile: "{{ terrauser_homedir }}/.profile"

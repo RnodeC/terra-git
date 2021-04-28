@@ -1,0 +1,18 @@
+[Unit]
+Description=Terra Oracle Feeder
+After=network.target
+
+[Service]
+Type=simple
+User={{ oracleuser }}
+WorkingDirectory={{ oracleuser_homedir }}/oracle-feeder/price-server
+ExecStart=/usr/local/lib/nodejs/node-{{ node_version }}-{{ node_distro }}/bin/npm run start
+Restart=on-failure
+RestartSec=5s
+Environment="PATH=/usr/local/lib/nodejs/node-{{ node_version }}-{{ node_distro }}/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin"
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+LimitNOFILE=65535

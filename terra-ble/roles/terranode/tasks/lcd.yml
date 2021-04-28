@@ -1,0 +1,18 @@
+
+- name: install lcd systemd service file
+  template:
+    src: ../templates/lcd.service.j2
+    dest: /etc/systemd/system/lcd.service
+  become: yes
+  
+- name: systemctl daemon-reload
+  systemd:
+    daemon-reload: yes
+  become: yes
+
+- name: systemctl start lcd
+  systemd:
+    name: lcd
+    state: restarted
+    enabled: yes
+  become: yes

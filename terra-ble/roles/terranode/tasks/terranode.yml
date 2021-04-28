@@ -1,0 +1,129 @@
+
+- name: add the terra user
+  user:
+    name: "{{ terrauser }}"
+    shell: /bin/bash
+  become: yes
+
+- name: install packages
+  package:
+    name: "{{ item }}"
+    state: installed
+  with_items:
+  - git
+  - python
+  - wget
+  - jq
+  - make
+  - gcc
+  - htop
+  - sysstat
+  - lsof
+  - tmux
+  become: yes
+
+- name: get terra core
+  git:
+    clone: yes
+    repo: https://github.com/terra-project/core.git
+    dest: "{{ terrauser_homedir }}/core"
+  become: yes
+  become_user: "{{ terrauser }}"
+
+- name: make install terrad and terracli
+  shell: "source {{ profile }} && make install"
+  args:
+    executable: /bin/bash
+    chdir: "{{ terrauser_homedir }}/core"
+    warn: no
+  become: yes
+  become_user: "{{ terrauser }}"
+
+- name: update nofiles limits kernel parameter
+  copy: 
+    src: terrad.conf
+    dest: /etc/security/limits.d/terrad.conf
+  become: yes
+
+- name: terrad init 
+  shell: "source {{ profile }} && terrad init {{ moniker }} --chain-id {{ network }}"
+  args:
+    creates: "{{ terrad_root }}/config/genesis.json"
+    executable: /bin/bash
+    chdir: "{{ terrauser_homedir }}"
+    warn: no
+  become: yes
+  become_user: "{{ terrauser }}"
+
+- name: download genesis
+  get_url:
+    url: "{{ genesis_url }}"
+    owner: "{{ terrauser }}"
+    group: "{{ terrauser }}"
+    dest: "{{ terrad_root }}/config/genesis.json"
+    mode: 0640
+    force: yes
+  become: yes
+  become_user: "{{ terrauser }}"
+
+- name: download addrbook
+  get_url:
+    url: "{{ addrbook_url }}"
+    owner: "{{ terrauser }}"
+    group: "{{ terrauser }}"
+    dest: "{{ terrad_root }}/config/addrbook.json"
+    mode: 0640
+    force: yes
+  become: yes
+  become_user: "{{ terrauser }}"
+
+- name: delete default data
+  file:
+    path: "{{ terrad_root }}/data"
+    state: absent
+  become: yes
+  become_user: "{{ terrauser }}"
+
+- name: create symlink to chaindata that was previously downloaded
+  file:
+    path: "{{ terrad_root }}/data"
+    state: link
+    src: "{{ full_chaindir }}"
+    owner: "{{ terrauser }}"
+    group: "{{ terrauser }}"
+  become: yes
+  become_user: "{{ terrauser }}"
+
+- name: update gas prices
+  lineinfile:
+    path: "{{ terrad_root }}/config/app.toml"
+    regexp: "^minimum-gas-prices"
+    line: "minimum-gas-prices = \"{{ minimum_gas_prices }}\""
+  become: yes
+  become_user: "{{ terrauser }}"
+
+- name: update seed nodes
+  lineinfile:
+    path: "{{ terrad_root }}/config/config.toml"
+    regexp: "^seeds"
+    line: "seeds = \"{{ seeds }}\""
+  become: yes
+  become_user: "{{ terrauser }}"
+
+- name: install terrad systemd service file
+  template:
+    src: terrad.service.j2
+    dest: /etc/systemd/system/terrad.service
+  become: yes
+
+- name: systemctl daemon-reload
+  systemd:
+    daemon-reload: yes
+  become: yes
+
+- name: systemctl start terrad
+  systemd:
+    name: terrad
+    state: restarted
+    enabled: yes
+  become: yes
