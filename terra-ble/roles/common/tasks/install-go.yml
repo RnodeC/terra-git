@@ -1,3 +1,9 @@
+- name: add the go user
+  user:
+    name: "{{ go_user }}"
+    shell: /bin/bash
+  become: yes
+
 - name: create gobin dir
   file: 
     path: "/home/{{ go_user }}/go/bin" 
