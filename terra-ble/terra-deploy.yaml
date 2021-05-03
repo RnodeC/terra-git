@@ -30,12 +30,10 @@
   roles:
     - role: terranode
       action: lcd
-      tags: 
-        - lcd 
     - role: terranode
       action: validator 
-      tags: 
-        - validator 
+  tags: 
+    - validator 
 
 - hosts: oracle
   roles:

@@ -38,7 +38,8 @@ ansible-vault encrypt --vault-id $(whoami)@$HOME/.ansible_vault /path/to/priv_va
 ## Execution
 
 ```bash
-ansible-playbook -e @ansible_vars.yaml --vault-password-file $HOME/.ansible_vault terra-deploy.yaml 
+# selectively choose one, more, or all tags to include
+ansible-playbook -e @ansible_vars.yaml --vault-password-file $HOME/.ansible_vault terra-deploy.yaml --tags "common,node,validator,price-server,feeder"
 ```
 
 
