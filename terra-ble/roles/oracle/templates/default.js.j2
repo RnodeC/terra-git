@@ -19,7 +19,7 @@ module.exports = {
   port: 8532,
   lunaProvider: {
     adjustTvwapSymbols: ['LUNA/KRW', 'LUNA/USDT'],
-    //bithumb: { symbols: ['LUNA/KRW'] },
+    bithumb: { symbols: ['LUNA/KRW'] },
     coinone: { symbols: ['LUNA/KRW'] },
     huobi: { symbols: ['LUNA/USDT'], krwPriceFrom: 'USDT' },
     binance: { symbols: ['LUNA/USDT'], krwPriceFrom: 'USDT' },
@@ -28,7 +28,7 @@ module.exports = {
   cryptoProvider: {
     adjustTvwapSymbols: ['BTC/KRW', 'USDT/USD'],
     upbit: { symbols: ['BTC/KRW'] },
-    //bithumb: { symbols: ['BTC/KRW'] },
+    bithumb: { symbols: ['BTC/KRW'] },
     binance: { symbols: ['BTC/USDT'] },
     huobi: { symbols: ['LUNA/USDT'] },
     bitfinex: { symbols: ['USDT/USD'] },
@@ -40,12 +40,6 @@ module.exports = {
       interval: 60 * 1000,
       timeout: 5000,
       apiKey: '{{ api_key }}', // necessary
-    },
-    exchangerate: {
-      symbols: fiatSymbols,
-      interval: 60 * 1000,
-      timeout: 5000,
-      // https://exchangerate.host/
     },
   },
 }

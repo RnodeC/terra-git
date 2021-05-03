@@ -1,33 +1,41 @@
 ## the defaults in here will get you onto testnet
 ## variables in <brackets> should be replaced
 ## variables that are empty should be filled in
+## read the comments, some variable are optional and can be removed
 
 # global vars
 network: tequila-0004 #or columbus-4
 moniker: <moniker>
 terrauser: terra
 oracleuser: oracle
-chaindir: /terradata #mountpoint for data disk
+full_chaindir: <optional, full path to the directory where chaindata lives.  i.e. `ls $full_chaindir` should list 'priv_validator_state.json', 'application.db', etc.  This is optional.  If your chaindata is in the default $HOME/.terrad/data location, leave blank>
 
-# chaindata (these variables are needed if you are starting from scratch)
-get_chain_data: false #set to true to download quicksync snapshot
+# vars needed for "get-chain-data" (get-chain-data should only be used if you are starting from scratch)
+chaindir: /terradata #mountpoint for data disk
 chainfile: tequila-4-default.20210425.0940 #required if get_chain_data is true.  the filename to download.  these get updated pretty frequently, check here:  https://terra.quicksync.io/#
 chaindisk: /dev/sdb #required if get_chain_data is true.  the data disk where the whole chain will be stored
 
-# terranode vars (these will work for testnet.  will all need to be changed for mainnet)
+# vars needed for "node" tag (these will work for testnet.  will all need to be changed for mainnet)
 addrbook_url: https://network.terra.dev/testnet/addrbook.json
 genesis_url: https://raw.githubusercontent.com/terra-project/testnet/master/tequila-0004/genesis.json
 minimum_gas_prices: 0.15uluna,0.15uusd,0.1018usdr,178.05ukrw,431.6259umnt
 seeds: 341f51bf381566dfef0fc345c2aa882cbeebd320@public-seed2.terra.dev:36656
 
-# validator vars
+# vars needed for "validator" tag
 path_to_node_key: <optional, path to node_key.json>
 path_to_priv_validator_key: <optional, path to priv_validator_key.json>
 
-# oracle vars 
+# vars needed for "price-server" tag
+fiat_provider: <the fiat provider you've chosen, i.e. fixer>
+api_key: !vault |
+          $ANSIBLE_VAULT;1.2;AES256;username
+          64393066353435386336313636396136613431323263663232336139346637343737373936366233
+          32383334336xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx64623134323931383633636565316466
+          3461336333xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx53339346263373737
+
+# vars needed for "feeder" tag
 validator_ip: localhost #this is the hostname or ip where we will reach the lcd server.  If oracle and terrad/lcd are on same machine, use localhost.  This needs to be updated to actually dynamically use the ip of the lcd machine...
 validator_bech_address: <your validator wallets terravaloperxxx wallet address.  terracli keys show -a --bech ...>
-fiat_provider: <the fiat provider you've chosen, i.e. fixer>
 feeder_encryption_key: !vault |
           $ANSIBLE_VAULT;1.2;AES256;username
           64646463363739633331643063396630376134653034353738663734643563666133626361353835
@@ -40,9 +48,3 @@ feeder_mnemonic: !vault |
           623238623xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx3362313763393065
           62313963393632616431333162643837303133336335643565336639613261323735326534333363
           36326437633538316165
-api_key: !vault |
-          $ANSIBLE_VAULT;1.2;AES256;username
-          64393066353435386336313636396136613431323263663232336139346637343737373936366233
-          32383334336xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx64623134323931383633636565316466
-          3461336333xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx53339346263373737
-

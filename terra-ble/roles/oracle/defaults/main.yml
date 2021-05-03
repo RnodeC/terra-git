@@ -1,5 +1,6 @@
 node_version: v14.16.1
 node_distro: linux-x64
 node_url: https://nodejs.org/dist/{{ node_version }}/node-{{ node_version }}-{{ node_distro }}.tar.xz
+oracleuser: oracle
 oracleuser_homedir: "/home/{{ oracleuser }}"
 profile: "{{ oracleuser_homedir }}/.profile"

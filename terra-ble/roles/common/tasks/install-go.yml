@@ -2,6 +2,7 @@
   user:
     name: "{{ go_user }}"
     shell: /bin/bash
+    home: "/home/{{ go_user }}"
   become: yes
 
 - name: create gobin dir
@@ -10,7 +11,16 @@
     owner: "{{ go_user }}"
     group: "{{ go_user }}"
     state: directory
-    mode: 0775
+    mode: 0755
+  become: yes
+
+- name: create gobin dir
+  file: 
+    path: "/home/{{ go_user }}/go/bin" 
+    owner: "{{ go_user }}"
+    group: "{{ go_user }}"
+    state: directory
+    mode: 0755
   become: yes
 
 - name: delete goroot dir before install

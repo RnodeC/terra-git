@@ -76,6 +76,12 @@
     force: yes
   become: yes
   become_user: "{{ terrauser }}"
+  when: (addrbook_url is defined) and (addrbook_url|length > 0)
+
+- name: Check for existence of full_chaindir
+  stat: 
+    path: "{{ full_chaindir }}"
+  register: stat_full_chaindir
 
 - name: delete default data
   file:
@@ -83,6 +89,7 @@
     state: absent
   become: yes
   become_user: "{{ terrauser }}"
+  when: stat_full_chaindir.stat.exists == true
 
 - name: create symlink to chaindata that was previously downloaded
   file:
@@ -92,7 +99,7 @@
     owner: "{{ terrauser }}"
     group: "{{ terrauser }}"
   become: yes
-  become_user: "{{ terrauser }}"
+  when: stat_full_chaindir.stat.exists == true
 
 - name: update gas prices
   lineinfile:

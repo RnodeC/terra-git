@@ -2,6 +2,7 @@
   user:
     name: "{{ oracleuser }}"
     shell: /bin/bash
+    home: "{{ oracleuser_homedir }}"
   become: yes
 
 - name: install packages
