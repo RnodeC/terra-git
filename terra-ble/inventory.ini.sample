@@ -14,5 +14,5 @@ m3
 # do not edit
 [terranodes:children]
 validator
-sentries
+#sentries
 
