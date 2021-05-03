@@ -16,7 +16,7 @@ chainfile: tequila-4-default.20210425.0940 #required if get_chain_data is true. 
 chaindisk: /dev/sdb #required if get_chain_data is true.  the data disk where the whole chain will be stored
 
 # vars needed for "node" tag (these will work for testnet.  will all need to be changed for mainnet)
-addrbook_url: https://network.terra.dev/testnet/addrbook.json
+addrbook_url: https://network.terra.dev/testnet/addrbook.json # this is an optional var.  Not good to set this if you already have a node running, because you will overwrite the improved address book which you have built by participating in the network.  Many stale hosts in this addr book.
 genesis_url: https://raw.githubusercontent.com/terra-project/testnet/master/tequila-0004/genesis.json
 minimum_gas_prices: 0.15uluna,0.15uusd,0.1018usdr,178.05ukrw,431.6259umnt
 seeds: 341f51bf381566dfef0fc345c2aa882cbeebd320@public-seed2.terra.dev:36656
