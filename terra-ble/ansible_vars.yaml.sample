@@ -21,7 +21,7 @@ genesis_url: https://raw.githubusercontent.com/terra-project/testnet/master/tequ
 minimum_gas_prices: 0.15uluna,0.15uusd,0.1018usdr,178.05ukrw,431.6259umnt
 seeds: 341f51bf381566dfef0fc345c2aa882cbeebd320@public-seed2.terra.dev:36656
 
-# vars needed for "validator" tag
+# vars needed for "validator" tag (these are to be used if moving a validator to a new host)
 path_to_node_key: <optional, path to node_key.json>
 path_to_priv_validator_key: <optional, path to priv_validator_key.json>
 

@@ -17,7 +17,9 @@
     action: terranode
     tags: 
       - node  
-     
+  - role: terranode
+    action: lcd    
+    
 # sentry support tbd
 #- hosts: sentries
 #  roles:
@@ -28,8 +30,6 @@
 
 - hosts: validator
   roles:
-    - role: terranode
-      action: lcd
     - role: terranode
       action: validator 
   tags: 
