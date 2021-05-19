@@ -78,10 +78,10 @@
   become_user: "{{ terrauser }}"
   when: (addrbook_url is defined) and (addrbook_url|length > 0)
 
-- name: Check for existence of full_chaindir
+- name: Check for existence of chaindir
   stat: 
-    path: "{{ full_chaindir }}"
-  register: stat_full_chaindir
+    path: "{{ chaindir }}"
+  register: stat_chaindir
 
 - name: delete default data
   file:
@@ -89,17 +89,17 @@
     state: absent
   become: yes
   become_user: "{{ terrauser }}"
-  when: stat_full_chaindir.stat.exists == true
+  when: stat_chaindir.stat.exists == true
 
 - name: create symlink to chaindata that was previously downloaded
   file:
     path: "{{ terrad_root }}/data"
     state: link
-    src: "{{ full_chaindir }}"
+    src: "{{ chaindir }}"
     owner: "{{ terrauser }}"
     group: "{{ terrauser }}"
   become: yes
-  when: stat_full_chaindir.stat.exists == true
+  when: stat_chaindir.stat.exists == true
 
 - name: update gas prices
   lineinfile:

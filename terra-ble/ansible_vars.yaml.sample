@@ -8,10 +8,9 @@ network: tequila-0004 #or columbus-4
 moniker: <moniker>
 terrauser: terra
 oracleuser: oracle
-full_chaindir: <optional, full path to the directory where chaindata lives.  i.e. `ls $full_chaindir` should list 'priv_validator_state.json', 'application.db', etc.  This is optional.  If your chaindata is in the default $HOME/.terrad/data location, leave blank>
+chaindir: <optional, full path to the directory where chaindata lives.  i.e. `ls $chaindir` should list 'priv_validator_state.json', 'application.db', etc.  This is optional.  If your chaindata is in the default $HOME/.terrad/data location, leave blank>
 
 # vars needed for "get-chain-data" (get-chain-data should only be used if you are starting from scratch)
-chaindir: /terradata #mountpoint for data disk
 chainfile: tequila-4-default.20210425.0940 #required if get_chain_data is true.  the filename to download.  these get updated pretty frequently, check here:  https://terra.quicksync.io/#
 chaindisk: /dev/sdb #required if get_chain_data is true.  the data disk where the whole chain will be stored
 
