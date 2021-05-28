@@ -8,7 +8,18 @@
 - name: download node_exporter tgz
   ansible.builtin.unarchive:
     src: "https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_vers }}/node_exporter-{{ node_exporter_vers }}.linux-amd64.tar.gz"
-    dest: /usr/local/bin
+    dest: /home/node_exporter
+    remote_src: yes
+    owner: node_exporter
+    group: node_exporter
+    mode: 0777
+  become: yes
+
+
+- name: install node_exporter binary
+  copy:
+    src: "/home/node_exporter/node_exporter-{{ node_exporter_vers }}.linux-amd64/node_exporter"
+    dest: /usr/local/bin/node_exporter
     remote_src: yes
     owner: node_exporter
     group: node_exporter
