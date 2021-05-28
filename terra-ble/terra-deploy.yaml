@@ -18,7 +18,9 @@
     tags: 
       - node  
   - role: terranode
-    action: lcd    
+    action: lcd
+    tags: 
+      - node    
     
 # sentry support tbd
 #- hosts: sentries
