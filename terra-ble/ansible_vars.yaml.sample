@@ -8,11 +8,11 @@ network: tequila-0004 #or columbus-4
 moniker: <moniker>
 terrauser: terra
 oracleuser: oracle
-chaindir: <optional, full path to the directory where chaindata lives.  i.e. `ls $chaindir` should list 'priv_validator_state.json', 'application.db', etc.  This is optional.  If your chaindata is in the default $HOME/.terrad/data location, leave blank>
+chaindir: <optional, full path to the directory where chaindata lives (or will live, if you are using get-chain-data tag too).  i.e. `ls $chaindir` should list 'priv_validator_state.json', 'application.db', etc.  This is optional.  If your chaindata is in the default $HOME/.terrad/data location, leave blank>
 
 # vars needed for "get-chain-data" (get-chain-data should only be used if you are starting from scratch)
-chainfile: tequila-4-default.20210425.0940 #required if get_chain_data is true.  the filename to download.  these get updated pretty frequently, check here:  https://terra.quicksync.io/#
-chaindisk: /dev/sdb #required if get_chain_data is true.  the data disk where the whole chain will be stored
+chainfile: tequila-4-default.20210425.0940 #no extension, no url... required if get_chain_data is true.  the filename to download.  these get updated pretty frequently, check here:  https://terra.quicksync.io/#
+chaindisk: /dev/sdb #required if get_chain_data is true.  the data disk where the whole chain will be stored.  this disk will be formatted and mounted, chain will be synced here.
 
 # vars needed for "node" tag (these will work for testnet.  will all need to be changed for mainnet)
 addrbook_url: https://network.terra.dev/testnet/addrbook.json # this is an optional var.  Not good to set this if you already have a node running, because you will overwrite the improved address book which you have built by participating in the network.  Many stale hosts in this addr book.
@@ -20,9 +20,15 @@ genesis_url: https://raw.githubusercontent.com/terra-project/testnet/master/tequ
 minimum_gas_prices: 0.15uluna,0.15uusd,0.1018usdr,178.05ukrw,431.6259umnt
 seeds: 341f51bf381566dfef0fc345c2aa882cbeebd320@public-seed2.terra.dev:36656
 
-# vars needed for "validator" tag (these are to be used if moving a validator to a new host)
+# vars needed for "validator" tag.  these are to be used if moving a validator to a new host.  Use these with caution - could easily result in double signing.  If you don't want to use these variables, just leave the values blank. 
 path_to_node_key: <optional, path to node_key.json>
 path_to_priv_validator_key: <optional, path to priv_validator_key.json>
+# preferably, these files would be encrypted with ansible-valut, i.e.:
+# encrypt your validator node_key.json (if you already have this key.  if not, and you are starting fresh, skip)
+#  ansible-vault encrypt --vault-id $(whoami)@$HOME/.ansible_vault /path/to/node_key.json
+
+# encrypt your validator priv_validator_key.json (if you already have this key.  if not, and you are starting fresh, skip)
+#   ansible-vault encrypt --vault-id $(whoami)@$HOME/.ansible_vault /path/to/priv_validator_key.json
 
 # vars needed for "price-server" tag
 fiat_provider: <the fiat provider you've chosen, i.e. fixer>
@@ -31,6 +37,8 @@ api_key: !vault |
           64393066353435386336313636396136613431323263663232336139346637343737373936366233
           32383334336xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx64623134323931383633636565316466
           3461336333xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx53339346263373737
+# encrypt your price server api key
+#  ansible-vault encrypt_string --vault-id $(whoami)@$HOME/.ansible_vault '29384xxxxx90234' --name 'api_key'
 
 # vars needed for "feeder" tag
 validator_ip: localhost #this is the hostname or ip where we will reach the lcd server.  If oracle and terrad/lcd are on same machine, use localhost.  This needs to be updated to actually dynamically use the ip of the lcd machine...
@@ -41,9 +49,15 @@ feeder_encryption_key: !vault |
           38633xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx933616264363035653743963303863643166
           3936666436636232660a646630363335343562656636623266353262383030613635306662663965
           3263
+# encrypt your feeder wallet disk encryption key (you choose whatever password you want to use here)
+#  ansible-vault encrypt_string --vault-id $(whoami)@$HOME/.ansible_vault 'oraclepassword' --name 'feeder_encryption_key'
+
 feeder_mnemonic: !vault |
           $ANSIBLE_VAULT;1.2;AES256;username
           39353830333964353662343662363361666337633738346430393530623532396235336633646530
           623238623xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx3362313763393065
           62313963393632616431333162643837303133336335643565336639613261323735326534333363
           36326437633538316165
+# encrypt your feeder wallet mnemonic (your feeder wallet should have been pre-created and you should have mnemonic written down)
+#  ansible-vault encrypt_string --vault-id $(whoami)@$HOME/.ansible_vault 'some long mnemonic lots of words' --name 'feeder_mnemonic'
+

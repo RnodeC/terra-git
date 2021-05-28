@@ -45,38 +45,8 @@
     dest: /etc/security/limits.d/terrad.conf
   become: yes
 
-- name: terrad init 
-  shell: "source {{ profile }} && terrad init {{ moniker }} --chain-id {{ network }}"
-  args:
-    creates: "{{ terrad_root }}/config/genesis.json"
-    executable: /bin/bash
-    chdir: "{{ terrauser_homedir }}"
-    warn: no
-  become: yes
-  become_user: "{{ terrauser }}"
 
-- name: download genesis
-  get_url:
-    url: "{{ genesis_url }}"
-    owner: "{{ terrauser }}"
-    group: "{{ terrauser }}"
-    dest: "{{ terrad_root }}/config/genesis.json"
-    mode: 0640
-    force: yes
-  become: yes
-  become_user: "{{ terrauser }}"
 
-- name: download addrbook
-  get_url:
-    url: "{{ addrbook_url }}"
-    owner: "{{ terrauser }}"
-    group: "{{ terrauser }}"
-    dest: "{{ terrad_root }}/config/addrbook.json"
-    mode: 0640
-    force: yes
-  become: yes
-  become_user: "{{ terrauser }}"
-  when: (addrbook_url is defined) and (addrbook_url|length > 0)
 
 - name: Check for existence of chaindir
   stat: 
@@ -101,6 +71,41 @@
   become: yes
   when: stat_chaindir.stat.exists == true
 
+
+- name: terrad init 
+  shell: "source {{ profile }} && terrad init {{ moniker }} --chain-id {{ network }}"
+  args:
+    creates: "{{ terrad_root }}/config/genesis.json"
+    executable: /bin/bash
+    chdir: "{{ terrauser_homedir }}"
+    warn: no
+  become: yes
+  become_user: "{{ terrauser }}"
+
+
+- name: download addrbook
+  get_url:
+    url: "{{ addrbook_url }}"
+    owner: "{{ terrauser }}"
+    group: "{{ terrauser }}"
+    dest: "{{ terrad_root }}/config/addrbook.json"
+    mode: 0640
+    force: yes
+  become: yes
+  become_user: "{{ terrauser }}"
+  when: (addrbook_url is defined) and (addrbook_url|length > 0)
+
+- name: download genesis
+  get_url:
+    url: "{{ genesis_url }}"
+    owner: "{{ terrauser }}"
+    group: "{{ terrauser }}"
+    dest: "{{ terrad_root }}/config/genesis.json"
+    mode: 0640
+    force: yes
+  become: yes
+  become_user: "{{ terrauser }}"
+  
 - name: update gas prices
   lineinfile:
     path: "{{ terrad_root }}/config/app.toml"

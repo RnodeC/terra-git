@@ -24,3 +24,9 @@
   become_user: "{{ terrauser }}"
   when: stat_priv_validator_key.stat.exists == true
 
+- name: systemctl start terrad
+  systemd:
+    name: terrad
+    state: restarted
+    enabled: yes
+  become: yes

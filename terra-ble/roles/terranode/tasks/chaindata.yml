@@ -25,7 +25,7 @@
 
 
 - name: make filesystem on chaindisk
-  filesystem:
+  community.general.filesystem:
     dev: "{{ chaindisk }}"
     fstype: ext4
   become: yes
@@ -34,14 +34,14 @@
   file:
     path: "{{ chaindir }}"
     mode: 0777
-    owner: "terrauser"
-    group: "terrauser"
+    owner: "{{ terrauser }}"
+    group: "{{ terrauser }}"
     state: directory
   become: yes
 
 
 - name: mount chaindisk
-  mount:
+  ansible.posix.mount:
     path: "{{ chaindir }}"
     src: "{{ chaindisk }}"
     fstype: ext4
@@ -63,7 +63,7 @@
     warn: no
     creates: "{{ chainfile }}.tar.lz4"
   become: yes
-  become_user: "terrauser"
+  become_user: "{{ terrauser }}"
   async: 72000
   poll: 10
 
@@ -76,6 +76,6 @@
     warn: no
     creates: "{{ chaindir }}/data"
   become: yes
-  become_user: "terrauser"
+  become_user: "{{ terrauser }}"
   async: 72000
   poll: 10

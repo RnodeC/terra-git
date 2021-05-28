@@ -10,36 +10,19 @@ You will need:
   * [`ansible` must be installed here](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
 * To create an `inventory.ini` file.  Use `inventory.ini.sample` to get started
 * To create an `ansible_vars.yaml` file. Use `ansible_vars.yaml.sample` to get started
-* To encrypt a few files/variables with `ansible-vault`:
+* To encrypt a few files/variables with `ansible-vault` (or you can leave them unencrypted..).  Details/instructions are in the `ansible_vars.yaml.sample`
+
+
+If you are using ansible_vault, here is how you can create an ansible password file.  this is a plaintext file used for convenience.  you can alternatively just store this in your hand and asked to be prompted for your password in all ansible-vault commands  
 ```bash
-# create an ansible password file.  this is a plaintext file used for convenience.  you can alternatively just store this in your hand and asked to be prompted for your password in all ansible-vault commands
 echo "myansiblevaultpassword" > $HOME/.ansible_vault
-
-# encrypt your price server api key
-ansible-vault encrypt_string --vault-id $(whoami)@$HOME/.ansible_vault '29384xxxxx90234' --name 'api_key'
-# ^ paste output into ansible_vars.yaml 
-
-# encrypt your feeder wallet disk encryption key (you choose whatever password you want to use here)
-ansible-vault encrypt_string --vault-id $(whoami)@$HOME/.ansible_vault 'oraclepassword' --name 'feeder_encryption_key'
-# ^ paste output into ansible_vars.yaml 
-
-# encrypt your feeder wallet mnemonic (your feeder wallet should have been pre-created and you should have mnemonic written down)
-ansible-vault encrypt_string --vault-id $(whoami)@$HOME/.ansible_vault 'some long mnemonic lots of words' --name 'feeder_mnemonic'
-# ^ paste output into ansible_vars.yaml
-
-# encrypt your validator node_key.json (if you already have this key.  if not, and you are starting fresh, skip)
-ansible-vault encrypt --vault-id $(whoami)@$HOME/.ansible_vault /path/to/node_key.json
-
-# encrypt your validator priv_validator_key.json (if you already have this key.  if not, and you are starting fresh, skip)
-ansible-vault encrypt --vault-id $(whoami)@$HOME/.ansible_vault /path/to/priv_validator_key.json
-
-```
+```  
 
 ## Execution
 
 ```bash
-# selectively choose one, more, or all tags to include
-ansible-playbook -e @ansible_vars.yaml --vault-password-file $HOME/.ansible_vault terra-deploy.yaml --tags "common,node,validator,price-server,feeder"
+# selectively choose one, more, or all tags to include.  this example shows all tags
+ansible-playbook -e @ansible_vars.yaml --vault-password-file $HOME/.ansible_vault terra-deploy.yaml --tags "common,get-chain-data,node,validator,price-server,feeder"
 ```
 
 
@@ -83,3 +66,11 @@ terracli tx oracle set-feeder $FEEDER_ADDRESS --from=$VALIDATOR --chain-id $NETW
 ## ToDo
 
 This playbook is still incomplete.  I would like this to support a full Sentry-style architecture.  There are a few nuances to think through though in order to support single node as well.  
+
+
+## Ansible-Galaxy Dependencies
+
+```bash
+
+ansible-galaxy collection install ansible.posix community.general
+```
