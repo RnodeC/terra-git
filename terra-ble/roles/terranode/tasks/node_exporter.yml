@@ -1,0 +1,34 @@
+- name: add the node_exporter user
+  user:
+    name: node_exporter
+    shell: /bin/false
+    system: yes
+  become: yes
+
+- name: download node_exporter tgz
+  ansible.builtin.unarchive:
+    src: "https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_vers }}/node_exporter-{{ node_exporter_vers }}.linux-amd64.tar.gz"
+    dest: /usr/local/bin
+    remote_src: yes
+    owner: node_exporter
+    group: node_exporter
+    mode: 0777
+  become: yes
+
+- name: install node_exporter systemd service file
+  template:
+    src: ../files/node_exporter.service
+    dest: /etc/systemd/system/node_exporter.service
+  become: yes
+  
+- name: systemctl daemon-reload
+  systemd:
+    daemon-reload: yes
+  become: yes
+
+- name: systemctl start node_exporter
+  systemd:
+    name: node_exporter
+    state: restarted
+    enabled: yes
+  become: yes

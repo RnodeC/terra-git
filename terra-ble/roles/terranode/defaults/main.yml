@@ -7,3 +7,6 @@ terrauser: terra
 terrauser_homedir: "/home/{{ terrauser }}"
 terrad_root: "{{ terrauser_homedir }}/.terrad"
 profile: "{{ terrauser_homedir }}/.profile"
+
+# node exporter
+node_exporter_vers: "1.1.2"

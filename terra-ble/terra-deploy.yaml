@@ -20,7 +20,11 @@
   - role: terranode
     action: lcd
     tags: 
-      - node    
+      - node
+  - role: terranode
+    action: node_exporter
+    tags: 
+      - node_exporter        
     
 # sentry support tbd
 #- hosts: sentries
